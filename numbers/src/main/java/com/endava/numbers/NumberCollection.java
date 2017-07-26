@@ -1,31 +1,43 @@
 package com.endava.numbers;
 
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 
-@Service
 public class NumberCollection {
-    private ArrayList<NumberInput> numberList=new ArrayList<>();
-    private Float sum=(float)0;
+    private ArrayList<Float> numberList;
+    private Float numberSum;
 
-    public void addNumber(NumberInput numberInput)
-    {
-        numberList.add(numberInput);
-        sum+=numberInput.getNumber();
+    public NumberCollection() {
+        numberList=new ArrayList<Float>();
+        numberSum=(float)0;
     }
 
-    public ArrayList<NumberInput> getNumberList() {
+    public ArrayList<Float> getNumberList() {
         return numberList;
     }
 
+    public void setNumberList(ArrayList<Float> numberList) {
+        this.numberList = numberList;
+    }
+
+    public Float getNumberSum() {
+        return numberSum;
+    }
+
+    public void setNumberSum(Float numberSum) {
+        this.numberSum = numberSum;
+    }
+
+    public void addNumber(Float number) {
+        numberList.add(number);
+        numberSum+=number;
+    }
     public void clearList()
     {
         numberList.clear();
-        sum=(float)0;
+        numberSum=(float)0;
     }
     public Float getAverage()
     {
-        return sum/numberList.size();
+        return numberSum/numberList.size();
     }
 }
