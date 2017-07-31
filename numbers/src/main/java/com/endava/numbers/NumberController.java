@@ -1,29 +1,59 @@
 package com.endava.numbers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 @RestController
-public class NumberController extends WebMvcConfigurerAdapter{
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/results").setViewName("results");
-    }
-    @GetMapping("/")
-    public String getNumber(NumberInput numberInput)
+public class NumberController {
+
+    @Autowired
+    private NumberCollection numberCollection;
+
+    @RequestMapping("/")
+    public String home()
     {
-        return "form";
+        return "/numbers - Show all numbers\n/average - Show average of numbers\n/clear - Clear list of numbers\n/add - Add a number\n/remove - Remove a number\n/partition - Split the numbers into two almost balanced sets";
     }
-    @PostMapping("/")
-    public String sendNumber(@Valid NumberInput numberInput, BindingResult bindingResult)
+
+    @RequestMapping("/numbers")
+    public ArrayList<NumberInput> getNumbers()
     {
-        if(bindingResult.hasErrors())
-            return "form";
-        return "redirect:/results";
+        return numberCollection.getNumberList();
+    }
+
+    @RequestMapping("/average")
+    public Double getAverage()
+    {
+        return numberCollection.getAverage();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/add")
+    public void addNumber(@RequestBody NumberInput numberInput)
+    {
+        numberCollection.addNumber(numberInput);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/remove")
+    public void removeNumber(@RequestBody NumberInput numberInput)
+    {
+        numberCollection.deleteNumber(numberInput);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value="/clear")
+    public void clearList()
+    {
+        numberCollection.clearList();
+    }
+
+    @RequestMapping("/partition")
+    public String partition()
+    {
+        return numberCollection.balancedPartition();
     }
 }
